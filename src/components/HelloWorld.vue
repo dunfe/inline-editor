@@ -1,58 +1,169 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+    <div class="hello">
+        <h1>{{ msg }}</h1>
+        <!--      v-cloak hides any un-compiled data bindings util the Vue instance is ready-->
+        <!--      when the element is click, the hideTooltip() method is called-->
+        <!-- v-cloak hides any un-compiled data bindings until the Vue instance is ready. -->
+        <!-- When the element is clicked the hideTooltp() method is called. -->
+
+        <div id="main" v-cloak v-on:click="hideTooltip">
+
+            <!-- This is the tooltip.
+                 v-on:clock.stop is an event handler for clicks, with a modifier that stops event propagation.
+                 v-if makes sure the tooltip is shown only when the "showtooltip" variable is truthful -->
+
+            <div class="tooltip" v-on:click.stop v-if="show_tooltip">
+
+                <!-- v-model binds the contents of the text field with the "text_content" model.
+                 Any changes to the text field will automatically update the value, and
+                 all other bindings on the page that depend on it.  -->
+
+                <input type="text" v-model="text_content"/>
+            </div>
+
+            <!-- When the paragraph is clicked, call the "toggleTooltip" method and stop event propagation. -->
+
+            <!-- The mustache expression will be replaced with the value of "text_content".
+                 It will automatically update to reflect any changes to that variable. -->
+
+            <p v-on:click.stop="toggleTooltip">{{text_content}}</p>
+
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+    export default {
+        name: 'HelloWorld',
+        props: {
+            msg: String
+        },
+        data: function () {
+            return {
+                show_tooltip: false,
+                text_content: 'Edit me.'
+            };
+        },
+        methods: {
+            hideTooltip: function(){
+                // When a model is changed, the view will be automatically updated.
+                this.show_tooltip = false;
+            },
+            toggleTooltip: function(){
+                this.show_tooltip = !this.show_tooltip;
+            }
+        }
+    }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+    h3 {
+        margin: 40px 0 0;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        display: inline-block;
+        margin: 0 10px;
+    }
+
+    a {
+        color: #42b983;
+    }
+    /* Hide un-compiled mustache bindings
+until the Vue instance is ready */
+
+    [v-cloak] {
+        display: none;
+    }
+
+    *{
+        margin:0;
+        padding:0;
+    }
+
+    /*-------------------------
+        The edit tooltip
+    --------------------------*/
+
+    .tooltip{
+        background-color:#5c9bb7;
+
+        background-image:-webkit-linear-gradient(top, #5c9bb7, #5392ad);
+        background-image:-moz-linear-gradient(top, #5c9bb7, #5392ad);
+        background-image:linear-gradient(top, #5c9bb7, #5392ad);
+
+        box-shadow: 0 1px 1px #ccc;
+        border-radius:3px;
+        width: 290px;
+        padding: 10px;
+
+        position: absolute;
+        left:50%;
+        margin-left:-150px;
+        top: 80px;
+    }
+    #main{
+        height:300px;
+        position:relative;
+        padding-top: 150px;
+    }
+
+    .tooltip:after{
+        /* The tip of the tooltip */
+        content:'';
+        position:absolute;
+        border:6px solid #5190ac;
+        border-color:#5190ac transparent transparent;
+        width:0;
+        height:0;
+        bottom:-12px;
+        left:50%;
+        margin-left:-6px;
+    }
+
+    .tooltip input{
+        border: none;
+        width: 100%;
+        line-height: 34px;
+        border-radius: 3px;
+        box-shadow: 0 2px 6px #bbb inset;
+        text-align: center;
+        font-size: 16px;
+        font-family: inherit;
+        color: #8d9395;
+        font-weight: bold;
+        outline: none;
+    }
+
+    p{
+        font-size:22px;
+        font-weight:bold;
+        color:#6d8088;
+        height: 30px;
+        cursor:default;
+    }
+
+    p b{
+        color:#ffffff;
+        display:inline-block;
+        padding:5px 10px;
+        background-color:#c4d7e0;
+        border-radius:2px;
+        text-transform:uppercase;
+        font-size:18px;
+    }
+
+    p:before{
+        content:'✎';
+        display:inline-block;
+        margin-right:5px;
+        font-weight:normal;
+        vertical-align: text-bottom;
+    }
 </style>
